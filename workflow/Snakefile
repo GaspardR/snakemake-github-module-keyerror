@@ -23,8 +23,8 @@ use rule A as B with:
 
 rule C:
     input:
-        a=rules.A.output.a,
-        b=rules.B.output.b,
+        a="results/a.txt",
+        b="results/b.txt",
     output:
         c="results/c.txt",
     shell:
