@@ -1,32 +1,4 @@
-# Main entrypoint of the workflow.
-# Please follow the best practices:
-# https://snakemake.readthedocs.io/en/stable/snakefiles/best_practices.html,
-# in particular regarding the standardized folder structure mentioned there.
 
-
-# load configuration
-# -----------------------------------------------------
-configfile: "config/config.yaml"
-
-
-# load rules
-# -----------------------------------------------------
-include: "rules/common.smk"
-include: "rules/process_reads.smk"
-
-
-# optional messages, log and error handling
-# -----------------------------------------------------
-onstart:
-    print("\n--- Analysis started ---\n")
-
-
-onsuccess:
-    print("\n--- Workflow finished! ---\n")
-
-
-onerror:
-    print("\n--- An error occurred! ---\n")
 
 
 # target rules
@@ -34,4 +6,26 @@ onerror:
 rule all:
     default_target: True
     input:
-        "results/multiqc/multiqc_report.html",
+        "results/c.txt",
+
+
+rule A:
+    output:
+        a="results/a.txt",
+    shell:
+        "touch {output[0]}"
+
+
+use rule A as B with:
+    output:
+        b="results/b.txt"
+
+
+rule C:
+    input:
+        a=rules.A.output.a,
+        b=rules.B.output.b,
+    output:
+        c="results/c.txt",
+    shell:
+        "cat {input.a} {input.b} > {output.c}"
